@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 public class Conn {
     private static final String url = "jdbc:mysql://localhost:8080/gerenciador_de_senha";
     private static final String user = "root";
-    private static final String password = "Rrm565756";
+    private static final String password = "";
 
     private static Connection conn;
 
