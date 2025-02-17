@@ -1,11 +1,9 @@
 package com.medeiros.gerenciadordesenha.services;
 
-import com.fasterxml.jackson.databind.DatabindException;
 import com.medeiros.gerenciadordesenha.entities.DataClient;
 import com.medeiros.gerenciadordesenha.repositories.DataClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
