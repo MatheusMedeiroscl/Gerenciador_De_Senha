@@ -1,6 +1,5 @@
 package com.medeiros.gerenciadordesenha.controllers;
 
-
 import com.medeiros.gerenciadordesenha.entities.DataClient;
 import com.medeiros.gerenciadordesenha.services.DataClientServices;
 import jakarta.validation.Valid;
@@ -13,43 +12,43 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/dataClient")
-@Validated
-public class ClientController {
+@RequestMapping("/dataclient")
+public class DataClientController {
+
     @Autowired
-    private DataClientServices services;
+    DataClientServices services;
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataClient> findById(@PathVariable Long id){
+    public ResponseEntity<DataClient> findByid(@PathVariable Long id){
         DataClient obj = this.services.findById(id);
 
         return ResponseEntity.ok().body(obj);
+
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<DataClient> findById(@PathVariable String name){
+    @GetMapping("/data/{name}")
+    public ResponseEntity<DataClient> findByName(@PathVariable String  name){
         DataClient obj = this.services.findByName(name);
 
         return ResponseEntity.ok().body(obj);
+
     }
 
     @PostMapping
-    @Validated(DataClient.CreateData.class) // interface de validação criada no DataClient
-    public ResponseEntity<Void> create(@Valid @RequestBody DataClient obj){
-
-        //Builder que pega contexto do user para encontrar e gerar o user
+    @Validated(DataClient.CreateDataClient.class)
+    public ResponseEntity<DataClient> create( @Valid @RequestBody DataClient obj){
         this.services.create(obj);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
+                buildAndExpand(obj.getId()).toUri();
 
-        return ResponseEntity.created(uri).build();
+        return  ResponseEntity.created(uri).build();
 
     }
 
-
     @PutMapping("/{id}")
-    @Validated(DataClient.UpdateData.class)
-    public ResponseEntity<Void> update(@Valid @RequestBody  DataClient obj, @PathVariable Long id){
+    @Validated(DataClient.UpdateDataClient.class)
+      public ResponseEntity<DataClient> update(@PathVariable Long id, @Valid @RequestBody DataClient obj){
         obj.setId(id);
         this.services.update(obj);
 
@@ -57,11 +56,12 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        this.services.delete(id);
-
-        return ResponseEntity.noContent().build();
+    public void delete(@PathVariable Long id){
+        services.delete(id);
     }
 
 
 }
+
+
+

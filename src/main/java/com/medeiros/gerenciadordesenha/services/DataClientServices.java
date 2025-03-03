@@ -8,51 +8,61 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service //usa das funções do repository
+@Service
 public class DataClientServices {
+
     @Autowired
-    private DataClientRepository repository;
+    private final DataClientRepository repository;
+
+    public DataClientServices(DataClientRepository repository) {
+        this.repository = repository;
+    }
 
     public DataClient findById(Long id){
-        Optional<DataClient> dataClient = this.repository.findById(id);
+        Optional<DataClient> obj = this.repository.findById(id);
 
-        return dataClient.orElseThrow(() -> new RuntimeException(
-                "[ERROR IN DATACLIENTSERVICES] - dados do cliente não foram encontrados  " + id
+        return obj.orElseThrow(() -> new RuntimeException(
+                "[ERROR] dados não encontrados {" + id + "}"
         ));
     }
 
     public DataClient findByName(String name){
-        Optional<DataClient> dataClient = repository.findByUsername(name);
+        Optional<DataClient> obj = this.repository.findByName(name);
 
-        return dataClient.orElseThrow(() -> new RuntimeException(
-                "[ERROR IN DATACLIENTSERVICES] - dados do cliente não foram encontrados" + name
+        return obj.orElseThrow(() -> new RuntimeException(
+                "[ERROR] dados não encontrados {" + name + "}"
         ));
     }
 
     @Transactional
-    public DataClient create(DataClient obj){
-        obj.setId(null);
-        obj = this.repository.save(obj);
+    public DataClient create(DataClient data){
+        data.setId(null);
+        data = repository.save(data);
 
-        return obj;
+        return data;
     }
 
     @Transactional
-    public DataClient update(DataClient obj){
-        DataClient newObj = findById(obj.getId());
-        newObj = obj;
+    public DataClient update(DataClient data){
+        DataClient newObj = findById(data.getId()); // Busca o objeto no banco
 
-        return this.repository.save(newObj);
+        if (data.getEmail() != null){
+            newObj.setEmail(data.getEmail());
+        }
+        if (data.getLink() != null){
+            newObj.setLink(data.getLink());
+        }
+        if (data.getName() != null){
+            newObj.setName(data.getName());
+        }
+        if (data.getPassword() != null){
+            newObj.setPassword(data.getPassword());
+        }
+
+        return repository.save(newObj); // Aqui deve ser 'newObj', não 'data'
     }
 
     public void delete(Long id){
-        DataClient obj = findById(id);
-
-        try {
-            this.repository.delete(obj);
-            System.out.println("dados do Cliente apagados com sucesso");
-        }catch (Exception e){
-            System.out.println("[ERROR IN DATACLIENTSERVICES] - não foi possivel deletar os dados do client: " + e);
-        }
-
-    }}
+        repository.deleteById(id);
+    }
+}
